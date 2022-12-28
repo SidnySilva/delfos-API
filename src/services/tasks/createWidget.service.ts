@@ -1,4 +1,3 @@
-import { json } from "stream/consumers";
 import { prisma } from "../../app";
 import AppError from "../../helpers/error.helper";
 
@@ -20,10 +19,16 @@ export const createWidgetService = async (body: any) => {
     const upsertWidget = await prisma.widgets.upsert({
       where: { id: widget.id },
       update: {
-        series: [...widget.series, { name: body.graphName, data: body.data }],
+        series: [
+          ...widget.series,
+          { name: body.graphName, data: body.data, type: body.type },
+        ],
       },
       create: {
-        series: [...widget.series, { name: body.graphName, data: body.data }],
+        series: [
+          ...widget.series,
+          { name: body.graphName, data: body.data, type: body.type },
+        ],
       },
     });
     return upsertWidget;
@@ -32,7 +37,7 @@ export const createWidgetService = async (body: any) => {
   const newWidget = await prisma.widgets.create({
     data: {
       title: { text: body.name },
-      series: { name: body.graphName, data: body.data },
+      series: { name: body.graphName, data: body.data, type: "line" },
     },
   });
 

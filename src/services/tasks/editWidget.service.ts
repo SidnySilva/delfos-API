@@ -9,14 +9,18 @@ export const editWidgetsService = async ({ id }: any, data: any) => {
   }
   const newSerie = widget.series.map((el) =>
     el["name"] === data.graphName
-      ? (el["data"] = { name: data.graphName, data: data.data? data.data:el['data'] })
+      ? (el["data"] = {
+          name: data.graphName,
+          data: data.data ? data.data : el["data"],
+          type: data.type ? data.type : el["type"],
+        })
       : el
   );
 
   const editedWidget = await prisma.widgets.update({
     where: { id: id },
     data: {
-      title: { text: data.name ? data.name : widget.title['text'] },
+      title: { text: data.name ? data.name : widget.title["text"] },
       series: newSerie,
     },
   });
